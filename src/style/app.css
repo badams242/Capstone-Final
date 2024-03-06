@@ -35,7 +35,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: white;
+    color: green;
     padding: 10px;
     font-weight: bold;
 }
@@ -43,14 +43,14 @@ body, html {
 .navbar-links, .navbar-icon-LO {
     display: flex;
     gap: 20px;
-    color: white;
+    color: green;
 }
 
 .navbar-icon-LO {
     margin-top: 4px;
 }
 .navbar-links a {
-    color: white;
+    color: geen;
     text-decoration: none;
     padding: 5px 10px;
 }
@@ -124,7 +124,7 @@ img {
     height: 10vh;
     display: flex;
     align-items: center;
-    color: white;
+    color: green;
     justify-content: center;
     font-size: 19px;
     font-weight: bold;
@@ -462,7 +462,7 @@ button {
     max-width: 500px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #ffffff;
+    background-color: green;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     font-family: sans-serif;
