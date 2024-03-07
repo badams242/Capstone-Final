@@ -35,7 +35,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: green;
+    color: blue;
     padding: 10px;
     font-weight: bold;
 }
@@ -43,7 +43,7 @@ body, html {
 .navbar-links, .navbar-icon-LO {
     display: flex;
     gap: 20px;
-    color: green;
+    color: blue;
 }
 
 .navbar-icon-LO {
