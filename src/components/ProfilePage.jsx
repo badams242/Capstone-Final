@@ -7,12 +7,12 @@ const Container = styled.div`
     color: white;
     padding: 2rem;
     font-family: Arial;
-`;
+    `;
 
 const Header = styled.h2`
     border-bottom: 2px solid #333;
     padding-bottom: 1rem;
-`;
+    `;
 
 const Input = styled.input`
     padding: 0.5rem;
@@ -24,7 +24,7 @@ const Input = styled.input`
     color: white;
 
     &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     }
 `;
 
@@ -44,7 +44,7 @@ const Button = styled.button`
 `;
 
 const SubHeader = styled.h3`
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid #333
     padding-bottom: 1rem;
 `;
 
@@ -83,7 +83,8 @@ const ProfilePage = () => {
                     } 
                     setUser({
                         ...user,
-                        name: userDataFromAPI.name,
+                        firstname:userDataFromAPI.name.firstname,
+                        lastname: userDataFromAPI.name.lastname,
                         email: userDataFromAPI.email,
                         phone: userDataFromAPI.phone,
                         orderHistory: userDataFromAPI.orderHistory || []
@@ -91,113 +92,110 @@ const ProfilePage = () => {
                 } else {
                     console.error('Unable to fetch user data from API');
                 } 
-            } catch(error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-        fetchUserDataFromAPI();
-    }, []);
+                } catch(error) {
+                    console.error('Error fetching user data:', error);
+                }
+            };
+            fetchUserDataFromAPI();
+        },[]);
+        
+        useEffect(() => {
+            const allReviews = JSON.parse(localStorage.getItem('reviews')) || [];
+            const userReviews = allReviews.filter(review => review.user === user.username);
+            setReviews(userReviews);
+        }, [user.username]);
 
-    useEffect(() => {
-        const allReviews = JSON.parse(localStorage.getItem('reviews')) || [];
-        const userReviews = allReviews.filter(review => review.user === user.username);
-        setReviews(userReviews);
-    }, [user.username, reviews]);
-
-    const handleSave = () => {
-        saveToLocalStorage();
-        setIsEditing(false);
-        setIsSaved(true);
-        setTimeout(() => setIsSaved(false), 3000);
-    };
-
-    const addMockOrder = () => {
-        const newOrder = {
-            id: Math.random().toString(36).substr(2, 9),
-            date: new Date().toISOString().split('T')[0], 
-            itemName: "Sample Item",
-            price: Math.floor(Math.random() * 100) + 1 
+        const handleSave = () => {
+            saveToLocalStorage();
+            setIsEditing(false);
+            setIsSaved(true);
+            setTimeout(() => setIsSaved(false), 3000);
         };
 
-        setUser(prevUser => ({
-            ...prevUser,
-            orderHistory: [...prevUser.orderHistory, newOrder]
-        }));
+        const addMockOrder = () => {
+            const newOrder = {
+                date: new Date().toISOString().split('T')[0], 
+                itemName: "Sample Item",
+                price: Math.floor(Math.random() * 100) + 1 
+            };
 
-        saveToLocalStorage();
-    };
+            setUser(prevUser => ({
+                ...prevUser,
+                orderHistory: [...prevUser.orderHistory, newOrder]
+            }));
 
-    const saveToLocalStorage = () => {
-        localStorage.setItem('user', JSON.stringify(user));
-    };
-
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setUser(prevUser => ({
-            ...prevUser,
-            [name]:value
-        }));
-    };
+            saveToLocalStorage();
+        };
+        const saveToLocalStorage = () => {
+            localStorage.setItem('user', JSON.stringify(user));
+        };
+        const handleChange = (e) => {
+            const {name, value} = e.target;
+            setUser(prevUser => ({
+                ...prevUser,
+                [name]:value
+            }));
+        };
 
     return (
         <Container>
             <div>
-                <div>
-                    <Header>Profile Page</Header>
-                    <Input
-                        type="text"
-                        name="name"
-                        value={user.name}
-                        onChange={handleChange}
-                        placeholder="Name"
-                        readOnly={!isEditing}
-                    />
-                    <Input
-                        type="email"
-                        name="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        placeholder="Email"
-                        readOnly={!isEditing}
-                    />
-                    <Input
-                        type="text"
-                        name="phone"
-                        value={user.phone}
-                        onChange={handleChange}
-                        placeholder="Phone Number"
-                        readOnly={!isEditing}
-                    />
-                    <Button edit onClick={() => setIsEditing(!isEditing)}>{isEditing ? "Cancel" : "Edit"}</Button>
-                    <Button onClick={handleSave}>Save</Button>
-                    {isSaved && <span>Data Saved!</span>}
-                </div>
-                <div>
-                    <SubHeader>Order History</SubHeader>
-                    <List>
-                        {user.orderHistory.map(order => (
-                            <ListItem key={order.id}>
-                                {order.date} - {order.itemName} - ${order.price}
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Button onClick={addMockOrder}>View Previous Order</Button>
-                </div>
-                <div>
-                    <SubHeader>Submit a Review</SubHeader>
-                    <ReviewForm username={user.username} onReviewSubmit={handleNewReview} />
-                </div>
-                <div>
-                    <SubHeader>Your Reviews</SubHeader>
-                    <List>
-                        {reviews.map((review, index) => (
-                            <ListItem key={index}>
-                                Rating: {review.rating} Star(s), Comment: {review.comment}
-                            </ListItem>
-                        ))}
-                    </List>
-                </div>
+            <div>
+                <Header>Profile Page</Header>
+                <input
+                type="text"
+                name="name"
+                value={user.name}
+                onChange={handleChange}
+                placeholder="Name"
+                readOnly={!isEditing}
+                />
+                <input
+                type="email"
+                name="email"
+                value={user.email}
+                onChange={handleChange}
+                placeholder="Email"
+                readOnly={!isEditing}
+                />
+                <input
+                type="text"
+                name="phone"
+                value={user.phone}
+                onChange={handleChange}
+                placeholder="Phone Number"
+                readOnly={!isEditing}
+                />
+                <Button edit onClick={() => setIsEditing(!isEditing)}>{isEditing ? "Cancel" : "Edit"}</Button>
+                <Button onClick={handleSave}>Save</Button>
+                {isSaved && <span>Data Saved!</span>}
             </div>
+            <div>
+                <SubHeader>Order History</SubHeader>
+                <List>
+                    {user.orderHistory.map((order, index) => (
+                        <ListItem key={index}>
+                            Date: {order.date}, Item: {order.itemName}, Price: ${order.price}
+                        </ListItem>
+                    ))}
+                </List>
+                <Button onClick={addMockOrder}>View Previous Order</Button>
+            </div>
+            <div>
+                <SubHeader>Submit a Review</SubHeader>
+                <ReviewForm username={user.username} onReviewSubmit={handleNewReview} />
+            </div>
+            <div>
+                <SubHeader>Your Reviews</SubHeader>
+                <List>
+                    {reviews.map((review, index) => (
+                        <ListItem key={index}>
+                            Rating: {review.rating} Star(s), Comment: {review.comment}
+                        </ListItem>
+                    ))}
+                </List>
+            </div>
+        </div>
         </Container>
     );
 };
