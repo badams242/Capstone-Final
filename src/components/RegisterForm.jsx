@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = () => {
@@ -26,7 +25,7 @@ const RegisterForm = () => {
     });
 
     const handleInputChange = (e) => {
-        const{ name, value } = e.target;
+        const { name, value } = e.target;
         
         if (name.includes('.')) {
             const [parent, child] = name.split('.');
@@ -34,7 +33,7 @@ const RegisterForm = () => {
                 ...prevState,
                 [parent]: {
                     ...prevState[parent],
-                    [child]:value
+                    [child]: value
                 }
             }));
         } else {
@@ -43,7 +42,7 @@ const RegisterForm = () => {
                 [name]: value
             }));
         }
-    }
+    };
 
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -159,7 +158,7 @@ const RegisterForm = () => {
             />
             <button className='register' type='submit'>Ready to Register?</button>
         </form>      
-    );;
+    );
 }
 
 export default RegisterForm;

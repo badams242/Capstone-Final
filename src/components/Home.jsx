@@ -1,85 +1,80 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { AiOutlineStar } from 'react-icons/ai';
-import ReviewForm from "./ReviewForm";
-import { Carousel } from "react-responsive-carousel";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const Home = (isLogin) => {
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState(null);
-    const [reviews, setReviews] = useState([]);
+const Login = ({ setToken, setIsLogin }) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
-    // const [reviews, setReviews] = useState([]);
-    
 
-    useEffect(()=> {
-        const fetchSomeProducts = async ()=> {
-            try {
-                const response = await fetch('https://fakestoreapi.com/products?limit=4');
-                if (!response.ok) {
-                    throw new Error('Error with network response');
-                }
+    const fetchLogin = async (username, password) => {
+        try {
+            const response = await fetch('https://fakestoreapi.com/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
+            });
+            
+            if (response.ok) {
                 const data = await response.json();
-                setProducts(data);
-            } catch (err) {
-                setError(err.message);
+                return data;
+            } else if (response.status === 401) {
+                setError('Incorrect username or password. Please try again.');
+                return null;
+            } else {
+                setError('Unexpected error occurred. Please try again.');
+                return null;
             }
+        } catch(err) {
+            console.error(err);
+            setError('Uh oh, something went wrong. Please try again.');
         }
-        fetchSomeProducts();
+    };
 
-        const storedReviews = JSON.parse(localStorage.getItem('reviews')) || [];
-        setReviews(storedReviews);
-    }, []);
+    const handleClick = async (e) => {
+        e.preventDefault()
+        if (!username || !password) {
+            setError('Please enter both username and password.');
+            return;
+        }
 
-    return(
-        <div className='home'>
-            <div className='cover-container'>
-            <img className='cover' src='https://i1.sndcdn.com/artworks-U0w8JIXyYA2CeaDD-ZoVPAw-t500x500.jpg'
-                alt='coverPic' style={{ width: "100%" }} />
-            <div className='overlay-text'>Say Hello to Our Latest Arrivals</div>
-            <button className='shop-now' onClick={() => navigate('/products')}>Shop Now</button>
-            </div>
-            <h3>Best Sellers</h3>
-            <div className='products'>
-                {error ? (
-                    <div>Error: {error}</div>
-                ):(
-                    products.map(product => (
-                        <div key={product.id} className='product'>
-                            <h4>{product.title}</h4>
-                            <img src={product.image} alt={product.title} />
-                            <div className='details'>
-                                <span>{`Category: ${product.category}`}</span>
-                                <span className='price'>${product.price}</span>
-                        </div>
-                    </div>
-                    ))
-                )}
-            </div>
-            <div className='submitted-reviews'>
-            {reviews.length > 0 && (
-                <>
-                    <h3>Hear what our customers are saying!</h3>
-                        {reviews.map((review, index) => (
-                            <div key={index} className='review'>
-                                <div className='review-rating'>
-                                {[1, 2, 3, 4, 5].map(starValue => (
-                                <AiOutlineStar
-                                    key={starValue}
-                                    color={starValue <= review.rating ? "gold" : "grey"}
-                                    size={20}
-                                />
-                                ))}
-                                </div>
-                                <p>{review.comment}</p>
-                            </div>
-                        ))}
-                    </>
-                )}
-            </div>
+        const data = await fetchLogin(username, password);
+
+        if (data && data.token) {
+            setToken(data.token);
+            setIsLogin(true);
+            navigate('/products');
+        }
+    };
+
+    return (
+        <div className='login'>
+            <form onSubmit={handleClick}>
+                <div className='login-inputs'>
+                    <input
+                        type='text'
+                        placeholder='Username'
+                        value={username}
+                        onChange={(e)=> setUsername(e.target.value)}
+                    />
+                    <input
+                        type='password'
+                        placeholder='Password'
+                        value={password}
+                        onChange={(e)=> setPassword(e.target.value)}
+                    />
+                    {error && <small className='errorMessage'>{error}</small>}
+                    <button className='login_btn'>Login</button>
+                </div>
+            </form>
+            <Link to='/users' style={{ color: '#007BFF', textDecoration: 'none', fontWeight: 'bold' }}>New? Register for special offers!</Link>
         </div>
     );
 };
 
-export default Home;
+export default Login;

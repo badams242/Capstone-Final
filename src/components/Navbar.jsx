@@ -12,7 +12,7 @@ const Navbar = ({ cartItemCount, isLogin, setToken, setIsLogin }) => {
             setToken(savedToken);
             setIsLogin(true);
         }
-    }, [setToken, setIsLogin])
+    }, [setToken, setIsLogin]);
 
     const handleLogout = () => {
         setToken('');
@@ -20,29 +20,30 @@ const Navbar = ({ cartItemCount, isLogin, setToken, setIsLogin }) => {
         window.alert('You have been logged out.');
         setIsLogin(false);
         navigate('/login');
-    }
+    };
+
     return (
         <>
-        <div className='navbar'>
-            <h1 className='logo' >Forever Fashion</h1>
-            <div className='navbar-links'>
-                <Link to="/">Home</Link>
-                {!isLogin && <Link to='/login'>Login</Link>}
-                {isLogin && <Link to='/Profile'>Profile</Link>}
-                {isLogin && (
-                    <span onClick={handleLogout} className='navbar-icon-LO'>Logout</span>
-                    )}                
-                <Link to="/cart">
-                    <FaShoppingCart title='Cart' />
-                    {cartItemCount > 0 && (
-                        <span className='cart-badge'>{cartItemCount}</span>
+            <div className='navbar'>
+                <h1 className='logo'>Forever Fashion</h1>
+                <div className='navbar-links'>
+                    <Link to="/"><FaHome title='Home' /></Link>
+                    {!isLogin && <Link to='/login'><FaSignInAlt title='Login' /></Link>}
+                    {isLogin && <Link to='/profile'><FaUser title='Profile' /></Link>}
+                    {isLogin && (
+                        <span onClick={handleLogout}><FaSignOutAlt title='Logout' /></span>
                     )}
-                    </Link>                    
+                    <Link to="/cart">
+                        <FaShoppingCart title='Cart' />
+                        {cartItemCount > 0 && (
+                            <span className='cart-badge'>{cartItemCount}</span>
+                        )}
+                    </Link>
+                </div>
             </div>
-        </div>
-        <Outlet />
+            <Outlet />
         </>
-    )
+    );
 };
 
-export default Navbar;
+export default Navbar;// You can add additional code here if needed
